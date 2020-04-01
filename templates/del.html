@@ -1,0 +1,83 @@
+<div class="content content--alt">
+    <div class="container-fluid">
+        <div class="row">
+            <div>
+                <br>
+                <br>
+                <br>
+            </div>
+            <div class="text-bold"><button onclick="closeNav()" align="right">x</button>
+                <center>VAIO</center>
+            </div>
+            <div>
+                <center>PCAP AGGREGATOR</center>
+            </div>
+            <nav>
+                <ul id="rootSidebar">
+                    <li class="sidebar__item selected">
+                        <a href="{{ url_for('index') }}" tabindex="0" title="Assets">
+                            <span class="icon-tools"></span>
+                            <span>Pcap</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item selected">
+                        <a tabindex="0" title="Alerts">
+                            <span>
+                                <span class="badge-wrapper">
+                                    <span class="icon-alert"></span>
+                                    <span class="badge badge--danger badge--tiny">3</span>
+                                </span>
+                            </span>
+                            <span>Alerts</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item selected">
+                        <a tabindex="0" title="Configurations">
+                            <span class="icon-configurations"></span>
+                            <span>Config</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item selected">
+                        <a tabindex="0" title="Reports">
+                            <span class="icon-graph"></span>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item selected">
+                        <a tabindex="0" title="Tools">
+                            <span class="icon-tools"></span>
+                            <span>Tools</span>
+                        </a>
+                    </li>
+                    <li class="sidebar__item selcted">
+                        <a tabindex="0" title="Validate">
+                            <span class="icon-analysis"></span>
+                            <span>Validate</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div id="main">
+            <button class="openbtn" style="align:left;" onclick="openNav()">☰ PCAP AGGREGATOR</button>
+        </div>
+        <script>
+            function openNav() {
+                document.getElementById("mySidebar").style.width = "250px";
+                document.getElementById("main").style.marginLeft = "500px";
+            }
+            function closeNav() {
+                document.getElementById("mySidebar").style.width = "0";
+                document.getElementById("main").style.marginLeft = "0";
+            }
+        </script>
+        <nav class="col-lg-2 col-xl-2 sidebar hidden-md-down dbl-margin-top" role="navigation">
+            <div class="base-margin">
+                <div class="text-bold">
+                    <center>VAIO</center>
+                </div>
+                <div>
+                    <center>PCAP AGGREGATOR</center>
+                </div>
+            </div>
+        </nav>
