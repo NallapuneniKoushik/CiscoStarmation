@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="The design system sponsored by Cisco Brand">
+	<meta name="image" content="uikit-1200x630@2x.png">
+	<meta itemprop="name" content="Cisco UI Kit">
+	<meta itemprop="description" content="The design system sponsored by Cisco Brand">
+	<meta itemprop="image" content="http://cisco-ui.cisco.com">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Cisco UI Kit">
+	<meta name="twitter:description" content="The design system sponsored by Cisco Brand">
+	<meta property="og:title" content="Cisco UI Kit">
+	<meta property="og:description" content="The design system sponsored by Cisco Brand">
+	<meta property="og:image" content="C:\Users\rucyadav\Desktop\Project\uikit-1200x630@2x.png">
+	<meta property="og:url" content="http://cisco-ui.cisco.com">
+	<meta property="og:site_name" content="Cisco UI Kit">
+	<meta property="og:locale" content="en_US">
+	<meta property="og:type" content="website">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<!--<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="60x60" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="120x120" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="76x76" href="img/apple-touch-icon.png">
+		<link rel="apple-touch-icon-precomposed" sizes="152x152" href="img/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="img/favicon.png" sizes="196x196">
+		<link rel="icon" type="image/png" href="img/favicon.png" sizes="96x96">
+		<link rel="icon" type="image/png" href="img/favicon.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="img/favicon.png" sizes="16x16">
+		<link rel="icon" type="image/png" href="img/favicon.png" sizes="128x128">
+		<link rel="icon" href="img/favicon.png" type="image/x-icon">-->
+	<meta name="application-name" content="Cisco UI Kit">
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+	<meta name="msapplication-TileImage"
+		content="C:\Users\nakoushi\Downloads\cui-2.0.1-standard - Copy\cui-2.0.1-standard - Copy">
+	<meta name="msapplication-square70x70logo"
+		content="C:\Users\nakoushi\Downloads\cui-2.0.1-standard - Copy\cui-2.0.1-standard - Copy">
+	<meta name="msapplication-square150x150logo"
+		content="C:\Users\nakoushi\Downloads\cui-2.0.1-standard - Copy\cui-2.0.1-standard - Copy">
+	<meta name="msapplication-wide310x150logo"
+		content="C:\Users\nakoushi\Downloads\cui-2.0.1-standard - Copy\cui-2.0.1-standard - Copy">
+	<meta name="msapplication-square310x310logo"
+		content="C:\Users\nakoushi\Downloads\cui-2.0.1-standard - Copy\cui-2.0.1-standard - Copy">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<title>PCAP</title>
+
+	<!--<link rel="stylesheet" href="{{url_for('static', filename = 'cui-standard.min.css')}}">-->
+	<link rel="stylesheet" type="text/css" href="static/css/cui-standard.min.css">
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"
+		integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="../public/js/styleguide.js"></script>
+
+	<script type="text/javascript">
+		console.log("before function")
+		function checking() {
+			console.log("Inside the function");
+
+			if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(document.getElementById("hostname").value)) {
+				console.log("true")
+				return true
+			}
+			else {
+				alert("You have entered an invalid IP address!")
+			}
+
+			// if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(myForm.hostname.value))
+			// {
+			// return (true)
+			// }
+			// alert("You have entered an invalid IP address!")
+			// return (false)
+		};
+	</script>
+</head>
+
+<body class="cui">
+	<nav class="header" id="styleguideheader" role="navigation">
+		<div class="container-fluid">
+			<div class="header-panels">
+				<div class="header-panel hidden-md-down">
+					<a class="header__logo" href="http://www.cisco.com" target="_blank">
+						<span class="icon-cisco"></span>
+					</a>
+					<h1 class="header__title">
+						<span>PCAP</span>
+					</h1>
+				</div>
+				<div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
+					<a class="header__logo" href="http://www.cisco.com" target="_blank">
+						<span class="icon-cisco"></span>
+					</a>
+				</div>
+				<div class="header-panel header-panel--right hidden-md-down">
+					<a href="../index.html" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
+					<div id="themeSwitcher" class="dropdown dropdown--left dropdown--offset-qtr header-item">
+						<a class="header-toolbar__link">LOGIN</a>
+						<div class="dropdown__menu">
+							<a id="theme-default" class="selected">Default</a>
+							<a id="theme-dark">Dark</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="content content--alt">
+		<div class="container-fluid">
+			<div class="row">
+
+				<!-- Sidebar -->
+				<nav class="col-lg-2 col-xl-2 sidebar hidden-md-down dbl-margin-top" role="navigation">
+					<div class="base-margin">
+						<!--<img class="image-size-64" src="../public/img/user-photo-thumb-3.png">-->
+						<div class="text-bold">
+							<center>VAIO</center>
+						</div>
+						<div>
+							<center>PCAP AGGREGATOR</center>
+						</div>
+					</div>
+					<ul id="rootSidebar">
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Assets">
+								<span class="icon-tools"></span>
+								<span>Pcap</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Alerts">
+								<span>
+									<span class="badge-wrapper">
+										<span class="icon-alert"></span>
+										<span class="badge badge--danger badge--tiny">3</span>
+									</span>
+								</span>
+								<span>Alerts</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Configurations">
+								<span class="icon-configurations"></span>
+								<span>Config</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Reports">
+								<span class="icon-graph"></span>
+								<span>Reports</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Tools">
+								<span class="icon-tools"></span>
+								<span>Tools</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" title="Validate">
+								<span class="icon-analysis"></span>
+								<span>Validate</span>
+							</a>
+						</li>
+						<li class="sidebar__item selected">
+							<a tabindex="0" href="/index1" target="_blank">
+								<span class="icon-analysis"></span>
+								Filtering</a>
+
+
+
+
+						</li>
+					</ul>
+				</nav>
+
+
+				<div class="col-30 col-lg-12 col-xl-10">
+					<div class="section">
+						<div class="row">
+							<div class="col-xl-8">
+								<div class="panel panel--loose panel--raised base-margin-bottom">
+									<div class="content">
+										<div class="container-fluid">
+											<div class="section">
+												<div class="flex-center-vertical">
+													<h1>PCAP</h1>
+													<div class="flex-fluid text-right">
+														<script src="table.js"></script>
+
+
+
+														<INPUT type="button" value="Add Row"
+															onclick="addRow('tableId')" />
+
+														<INPUT type="button" value="Delete Row"
+															onclick="deleteRow('tableId')" />
+
+
+
+
+													</div>
+												</div>
+											</div>
+											<div class="section">
+												<div class="responsive-table">
+													<table id="tableId" class="table table--lined table--selectable">
+
+														<thead>
+															<tr>
+																<th>
+																	<label class="checkbox">
+																		<input type="checkbox" />
+																		<span class="checkbox__input"></span>
+																	</label>
+																</th>
+																<th class="sortable">HOST <span
+																		class="sort-indicator icon-dropdown"></span>
+																</th>
+
+																<th class="contentEditable">ARGUMENTS</th>
+																<th class="hidden-lg-down">STATUS</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+									<form class="form" role="form" method="post" action="">
+										<button id="submit" type="submit" class="btn btn--primary">Submit</button>
+										<br><br>
+
+									</form>
+								</div>
+							</div>
+
+
+
+
+							<div class="col-xl-4">
+								<div class="panel panel--loose panel--raised">
+
+
+									<h2 class="subtitle">DETAILS</h2>
+									<hr>
+									<form name="form1" class="form" role="form" method="post" action="">
+
+
+
+
+										<div class="col-md">
+											<div class="form-group base-margin-bottom">
+												<div class="form-group__text">
+
+													<div class="form-group  required"><label class="control-label"
+															for="hostname">HOSTNAME</label>
+
+														<input class="form-control" id="hostname" name="hostname"
+															required="" type="text-bold" value="">
+
+													</div>
+
+
+
+													<div class="form-group  required"><label class="control-label"
+															for="username">USERNAME</label>
+
+														<input class="form-control" id="username" name="username"
+															required="" type="text" value="">
+
+													</div>
+
+
+
+
+													<div class="form-group  required"><label class="control-label"
+															for="password">PASSWORD</label>
+
+														<input class="form-control" id="password" name="password"
+															required="" type="password" value="">
+
+													</div>
+
+													<div class="form-group  required"><label class="control-label"
+															for="password">ARGUEMENTS</label>
+
+														<input class="form-control" id="password" name="password"
+															required="" type="password" value="">
+
+
+														<select id="cars">
+															<option value="volvo">Volvo</option>
+															<option value="saab">Saab</option>
+															<option value="opel">Opel</option>
+															<option value="audi">Audi</option>
+														</select>
+
+
+													</div>
+
+
+
+
+
+												</div>
+											</div>
+										</div>
+
+
+										<!-- <button class="btn btn-success" id="inputText" type="submit" onclick="return ValidateIPaddress()">Sign In</button> -->
+										<input type="submit" class="btn btn-success" id="InputSubmit" name="inputText"
+											value="Login" onclick="checking();">
+										<br><br>
+
+									</form>
+								</div>
+
+
+
+								<br>
+
+								<!-- errors -->
+
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+
+
+
+
+			</div>
+			<footer class="footer">
+				<div class="footer__links">
+					<ul class="list list--inline">
+						<li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html"
+								target="_blank">Contacts</a></li>
+						<li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ" target="_blank">Feedback</a>
+						</li>
+						<li><a href="https://www.cisco.com/c/en/us/about/help.html" target="_blank">Help</a></li>
+						<li><a href="http://www.cisco.com/c/en/us/about/sitemap.html" target="_blank">Site Map</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html"
+								target="_blank">Terms & Conditions</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html"
+								target="_blank">Privacy Statement</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies"
+								target="_blank">Cookie Policy</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html"
+								target="_blank">Trademarks</a></li>
+					</ul>
+				</div>
+			</footer>
+</body>
+
+</html>

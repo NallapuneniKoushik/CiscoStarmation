@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<h1></h1>
+
+<head>
+  <script src="{{url_for('static', filename='webfont.js')}}" charset="utf-8"></script>
+  <script src="{{url_for('static', filename='snap.svg-min.js')}}" charset="utf-8"></script>
+  <script src="{{url_for('static', filename='underscore-min.js')}}" charset="utf-8"></script>
+  <script src="{{url_for('static', filename='sequence-diagram-min.js')}}" charset="utf-8"></script>
+  <script src="{{url_for('static', filename='jquery-1.9.0.min.js')}}" charset="utf-8"></script>
+  <script src="{{url_for('static', filename='raphael.min.js')}}" charset="utf-8"></script>
+  <!--
+  <style>
+    pre:hover {
+      background-color: green;
+    }
+  </style>-->
+
+  </script>
+  <!-- CSS property to place div
+			side by side -->
+  <style>
+    #leftbox {
+      float: left;
+      width: 28%;
+      height: 280px;
+      padding-left: 40px;
+    }
+
+    #middlebox {
+      float: left;
+      width: 42%;
+      top: 100px;
+      text-align: center;
+    }
+
+    #rightbox {
+      float: right;
+      width: 30%;
+      padding-right: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      -webkit-box-sizing: border-box;
+      background-position: top;
+      vertical-align: top;
+      font-size: 1em;
+      line-height: 120%;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .div {
+      text-align: left;
+    }
+
+    pre {
+      display: inline-block;
+      font-size: 1em;
+      border-style: solid;
+      background-color: grey;
+      text-align: justify;
+      text-align-first: justify;
+      /*height: 400px;  onload="PreHover()"*/
+    }
+
+    #txt {
+      padding: 1em;
+      line-height: 120%;
+    }
+
+    #txt div:hover {
+      background: red;
+      z-index: 1;
+    }
+  </style>
+
+
+  <meta charset="utf-8">
+  <title>Name</title>
+  <!-- meta -->
+  <meta name="description" content="pcap validatio &amp; convertor">
+  <meta name="author" content="maparama@cisco.com">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!-- styles -->
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href="http://10.88.236.243:5000/static/css/cui-standard.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="cui" data-theme="light">
+
+  <!-- Navigation -->
+  <nav class="header" id="styleguideheader" role="navigation">
+    <div class="container-fluid">
+      <div class="header-panels">
+        <div class="header-panel hidden-md-down">
+          <a class="header__logo" href="http://www.cisco.com" target="_blank">
+            <span class="icon-cisco"></span>
+          </a>
+          <h1 class="header__title">
+            <span style="color: var(--cui-accent-color); font-weight:bold">Sequence Diagram</span>
+          </h1>
+        </div>
+        <div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
+          <a class="header__logo" href="http://www.cisco.com" target="_blank">
+            <span class="icon-cisco"></span>
+          </a>
+        </div>
+        <div class="header-panel header-panel--right hidden-md-down">
+          <a href="../index.html" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
+          <div id="themeSwitcher" class="dropdown dropdown--left dropdown--offset-qtr header-item">
+            <a class="header-toolbar__link">LOGIN</a>
+            <div class="dropdown__menu">
+              <a id="theme-default" class="selected">Default</a>
+              <a id="theme-dark">Dark</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </header>
+    </div>
+  </nav>
+
+  <body><br><br>
+    <div id="boxes">
+      <div id="leftbox"><br>
+        <pre <textarea spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;"
+          rows="15" cols="30">{%for list in result%}
+          {{list}}{%endfor%}</pre>
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP4/x8AAwAB/2+Bq7YAAAAASUVORK5CYII="
+          onload="PreHover()" />
+        <br>
+        <div class="flex justify-content-center">
+          <button onclick="DispDia()" id="submit" type="submit" class="btn btn--primary">Submit</button>
+        </div>
+
+        <script>
+          function PreHover() {
+            var output = '';
+            var htm = document.getElementById('txt').innerHTML;
+            var text = htm.split('\n');
+            for (var x = 0; x < text.length - 1; x++) {
+              output = output + '<div>' + text[x] + '</div>';
+            }
+            document.getElementById('txt').innerHTML = output;
+          }
+
+          function DispDia() {
+            var d = Diagram.parse(document.getElementById('txt').innerText);
+            var options = {
+              theme: 'simple'
+            };
+            document.getElementById('diagram').innerHTML = "";
+            d.drawSVG('diagram', options);
+          }
+
+          var backEnd = {{ result| tojson}};
+
+          /*$("#txt").on("mouseup", function(eventData) {
+                var lineHeight = $(this).css("line-height")
+                lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
+    
+                var line = Math.floor(eventData.offsetY / lineHeight);
+                document.getElementById('TextRight').innerHTML = "";
+                document.getElementById('TextRight').innerHTML = backEnd[line-1];
+              });*/
+        </script>
+      </div>
+
+
+
+
+      <div id="middlebox" class=wsd wsd-style="modern-blue;">
+
+        <div id="diagram"></div>
+        <script>
+          var d = Diagram.parse(document.getElementById('txt').innerText);
+          var options = {
+            theme: 'simple'
+          };
+          d.drawSVG('diagram', options);
+        </script>
+      </div>
+
+
+      <div id="rightbox"><br>
+        <textarea spellcheck="false" id="TextRight" text-align="left" rows="23" cols="25">{%for list in result2%}{{list}}
+          {%endfor%}</textarea>
+      </div>
+    </div>
+  </body>
+
+</html>
