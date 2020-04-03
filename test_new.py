@@ -76,6 +76,27 @@ def get_data():
     return response
 
 
+@app.route('/get_pcap_file/<slug>')
+def get_pcap_file(slug):
+    slug = int(slug)
+    data = read_records()
+    values = data[slug]
+    hostname = values['hostname']
+    username = values['username']
+    arguments = values['arguments']
+    pcap_filename = '_'.join((username, hostname.replace('.', '_'), arguments)) + '.pcap'
+    cwd = os.getcwd()
+    file_path = os.sep.join((cwd, "TcpOutputs", pcap_filename))
+    pcap_data = read_file(file_path)
+    response = app.response_class(
+        response=pcap_data,
+        status=200,
+        mimetype='text/*'
+    )
+    response.headers.set('Content-disposition', "attachment", filename=pcap_filename)
+    return response
+
+
 if __name__ == '__main__':
     app.secret_key = 'secret_key'
     app.debug = True

@@ -62,8 +62,8 @@ def read_lines_strip_return(file_name, split=None, index=None, server_type=None)
 
 def read_file(file_name):
     try:
-        with open(file_name) as readfile:
-            return readfile.read().strip()
+        with open(file_name, 'rb') as readfile:
+            return readfile.read()
     except FileNotFoundError:
         return "FileNotFoundError: {0}".format(file_name)
     except IOError as ioe:

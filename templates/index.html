@@ -76,6 +76,9 @@
 						$.each(data, function (rowid, row) {
 							if ($('#' + row.slug + '_status')[0].innerHTML !== row.status)
 								$('#' + row.slug + '_status')[0].innerHTML = row.status;
+							if (row.status === 'Get PCAP : successful') {
+								$('#' + row.slug + '_download').show();
+							}
 							if (row.status === 'Not Connected' || row.status === 'Get PCAP : successful' || row.status === 'Get PCAP : 30 secs timeout' || row.status === 'Connection failed!') {
 								$('#' + row.slug).hide();
 							}
@@ -281,7 +284,7 @@
 					</div>
 
 				</nav>
-				<div class="col-30 col-lg-12 col-xl-10">
+				<div class="col-30 col-lg-12">
 					<div class="section">
 						<div class="row">
 							<div class="col-xl-8">
@@ -304,7 +307,7 @@
 													</ul>
 													{% endif %}
 													{% endwith %}
-											</div>
+												</div>
 												<div class="section">
 													<div class="responsive-table">
 														<table id="tableId"
@@ -335,6 +338,12 @@
 																<td>
 																	<div id="{{ row.slug }}_status">
 																		{{ row.status }}
+																	</div>
+																	<div id="{{ row.slug }}_download"
+																		style="display: none;">
+																		<a href="/get_pcap_file/{{ row.slug }}">
+																			<i class="fa fa-download"></i>
+																		</a>
 																	</div>
 																	<div id="{{ row.slug }}" style="display: block;">
 																		<i class="fa fa-spinner fa-spin"></i>

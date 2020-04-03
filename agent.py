@@ -28,7 +28,7 @@ def touch_file(file_name):
         print('Unable to read file {}'.format(file_name))
 
 
-def create_p_cap():
+def create_pcap():
     properties = load_json_from_file("properties.json")
     arguments = properties['arguments']
 
@@ -46,4 +46,4 @@ def create_p_cap():
     os.remove("agent.py")
 
 
-create_p_cap()
+create_pcap()

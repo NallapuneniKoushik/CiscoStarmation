@@ -2,7 +2,7 @@ import os
 import sys
 import time as tm
 from threading import Thread
-
+import logging
 import paramiko
 
 from db_util import *
@@ -57,7 +57,8 @@ def listen(ssh_client, ftp_client, home_dir, values):
         if len(output) == 0 or time_elapsed > 6:
             pcap_filename = values['pcap_filename']
             src = home_dir + pcap_filename
-            dst = "C:\\Users\\nakoushi\\Desktop\\TcpOutputs\\{}".format(pcap_filename)
+            cwd = os.getcwd()
+            dst = os.sep.join((cwd, "TcpOutputs", pcap_filename))
             ftp_client.get(src, dst)
             print("Got Pcap file into local host")
             if len(output) == 0:
@@ -98,12 +99,10 @@ def server_connection(data):
 
 
 def merge_pcap():
-    wire_shark_dir = "C:\\Program Files\\Wireshark"
-    src = "C:\\Users\\nakoushi\\Desktop\\TcpOutputs\\"
-    dst = "C:\\Users\\nakoushi\\Desktop\\TcpOutput\\merged.pcap"
-    src_pcap_s = [src + '\\' + _ for _ in os.listdir(src) if _.endswith('.pcap')]
-    pcap_files = ' '.join(src_pcap_s)
     cwd = os.getcwd()
-    os.chdir(wire_shark_dir)
+    src = os.sep.join((cwd, "TcpOutputs"))
+    dst = os.sep.join((cwd, "TcpOutput", "merged.pcap"))
+    src_pcap_s = [os.sep.join((src, _)) for _ in os.listdir(src) if _.endswith('.pcap')]
+    pcap_files = ' '.join(src_pcap_s)
     os.system(f"mergecap -w {dst} {pcap_files}")
-    os.chdir(cwd)
+
