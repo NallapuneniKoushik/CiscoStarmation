@@ -1,8 +1,15 @@
+import csv
+import io
+
+from Server_Connection import *
 from flask import *
 
-from Server_connection_1 import *
+from database import add_data
 
 app = Flask(__name__)
+app.secret_key = 'secret_key'
+app.debug = True
+wsgi_app = app.wsgi_app
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -97,7 +104,54 @@ def get_pcap_file(slug):
     return response
 
 
+# adding
+
+
+@app.route('/fonct', methods=['POST', 'GET'])
+def fonct():
+    if request.method == 'POST':
+        Protocol = request.form['Protocol']
+        key = request.form['key']
+        add_data(Protocol, key)
+    return render_template('ex.html')
+
+
+@app.route('/ladder', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        f = request.files['fileupload']
+        if not f:
+            print("No files chosen")
+            app.logger.info("No File Chosen")
+            return redirect(request.url)
+        stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.reader(stream)
+        lines = next(csv_input)
+        print(len(lines))
+        reader = csv.reader(open(r'C:\Users\nakoushi\FlaskProjects\Interfaces.csv', 'r'))
+        Dictionary = {}
+        data = []
+        Message = []
+
+        for row in reader:
+            k, v = row
+            Dictionary[k] = v
+
+        for row in csv_input:
+            if row[7] == '' and row[8] == '':
+                Message.append('No Message')
+            else:
+                Message.append(row[7] + row[8])
+            key = row[5][0].upper() + row[5][1].lower()
+            list = Dictionary[key].split('->')
+            if row[6] == 'IN':
+                data.append(list[0] + "->" + list[1] + ":" + "  " + row[4])
+            else:
+                data.append(list[1] + "->" + list[0] + ":" + "  " + row[4])
+        print('hello')
+        return render_template('result.html', result=data, result2=Message)
+    return render_template('main1login.html')
+
+
 if __name__ == '__main__':
-    app.secret_key = 'secret_key'
-    app.debug = True
     app.run()

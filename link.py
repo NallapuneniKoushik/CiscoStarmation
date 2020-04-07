@@ -1,13 +1,26 @@
-from flask import Flask, flash, render_template, request, redirect, url_for
+from flask import Flask, request, url_for, redirect, render_template
 import csv
 import io
 
 app = Flask(__name__)
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
-@app.route('/', methods=['GET', 'POST'])
-def login():
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/index', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        return redirect(url_for('index'))
+
+    # show the form, it wasn't submitted
+    return render_template('index.html')
+
+
+@app.route('/ladder', methods=['GET', 'POST'])
+def ladder():
     if request.method == 'POST':
         f = request.files['fileupload']
         if not f:
@@ -18,6 +31,7 @@ def login():
         csv_input = csv.reader(stream)
         lines = next(csv_input)
         print(len(lines))
+
         reader = csv.reader(open(r'Interfaces\Interfaces.csv'))
         Dictionary = {}
         data = []
@@ -41,7 +55,3 @@ def login():
         print('hello')
         return render_template('result.html', result=data, result2=Message)
     return render_template('main1login.html')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

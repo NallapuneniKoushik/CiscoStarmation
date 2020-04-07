@@ -210,147 +210,95 @@
 				<div class="col-30 col-lg-12">
 					<div class="section">
 						<div class="row">
-							<div class="col-xl-8">
-								<form class="form" role="form" method="POST">
-									<div class="panel panel--loose panel--raised base-margin-bottom">
-										<div class="content">
-											<div class="container-fluid">
-												<div class="section">
-													<div class="flex-center-vertical">
-														<h1>PCAP</h1>
+							<div class="col-xl-12">
+								<div class="panel panel--loose panel--raised base-margin-bottom"
+									Style="top-padding:250px">
+									<div class="content">
+										<div class="container-fluid">
+
+											<div class="flex flex-center" style="position: relative; top: 30px">
+												<div class="panel panel--raised panel--loose base-margin-right;">
+													<div class="flex justify-content-center">
+														<h3>Protocol Filtering</h3>
 													</div>
-												</div>
-												<div>
-													{% with messages = get_flashed_messages() %}
-													{% if messages %}
-													<ul>
-														{% for message in messages %}
-														<li>{{ message }}</li>
-														{% endfor %}
-													</ul>
-													{% endif %}
-													{% endwith %}
-												</div>
-												<div class="section">
-													<div class="responsive-table">
-														<table id="tableId"
-															class="table table--lined table--selectable">
-															<tr>
-																<th>
-																	<input type="checkbox" class="checkbox" id="checked"
-																		name="checked">
-																</th>
-																<th class="sortable">HOST
-																	<span class="sort-indicator icon-dropdown"></span>
-																<th class="sortable">USERNAME
-																	<span class="sort-indicator icon-dropdown"></span>
-																</th>
-																<th class="contentEditable">ARGUMENTS</th>
-																<th class="hidden-lg-down">STATUS</th>
-															</tr>
-															{% for rowid, row in data.items() %}
-															<tr>
-																<td>
-																	<input type="checkbox" class="checkbox"
-																		id="{{ row.slug }}-checked"
-																		name="{{ row.slug }}-checked">
-																</td>
-																<td>{{ row.hostname }}</td>
-																<td>{{ row.username }}</td>
-																<td>{{ row.arguments }}</td>
-																<td>
-																	<div id="{{ row.slug }}_status">
-																		{{ row.status }}
-																	</div>
-																	<div id="{{ row.slug }}_download"
-																		style="display: none;">
-																		<a href="/get_pcap_file/{{ row.slug }}">
-																			<i class="fa fa-download"></i>
-																		</a>
-																	</div>
-																	<div id="{{ row.slug }}" style="display: block;">
-																		<i class="fa fa-spinner fa-spin"></i>
-																	</div>
-																</td>
-															</tr>
+
+
+													<div class="form-group base-margin-bottom">
+														<div class="form-group__text  required">
+
+															<form class="form" role="form" method="POST" action="/download"
+																id="upload_form" enctype="multipart/form-data">
+
+
+																<div class="form-group  required"><label
+																		class="control-label"
+																		for="expected_csv_file"><b>CSV Log File(.csv):
+																		</b></label>
+
+
+																	<fieldset>
+																		<input type="file" name="file"
+																			id="txtFileUpload" accept=".csv" />
+																	</fieldset>
+
+																	<label for="num"><b>Enter IMSI</b></label>
+																	<input type="text" id="num" name="num"><br><br>
+
+
+																</div>
+																</section>
+
+
+														</div>
+
+														<form method="POST" action='/download'><b>Select Protocol:
+															</b><br><br>
+															{% for element in context.row %}
+															<input type="checkbox" value="{{element[0]}}"
+																name="mycheckbox">{{element[0]}}
 															{% endfor %}
-															{% if data|length != 0 %}
-															<tr>
-																<td></td>
-																<td>
-																	<button type="submit" name="action" value="submit"
+															<script
+																src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+															<script
+																src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+
+
+															<br><br>
+															<div class="flex justify-content-center">
+
+
+
+																<form class="form" role="form" method="post" action="">
+
+																	<button id="submit" href="index2.html" type="submit"
 																		class="btn btn--primary">Submit</button>
-																</td>
-																<td></td>
-																<td></td>
-																<td>
-																	<button type="submit" name="action" value="delete"
-																		class="btn btn--dark">Delete</button>
-																</td>
-															</tr>
-															{% else %}
-															<tr>
-																<td></td>
-																<td></td>
-																<td colspan="3">
-																	<h3>Please add servers</h3>
-																</td>
-															</tr>
-															{% endif %}
-														</table>
+																</form>
+															</div>
+														</form>
+														</form>
+
 													</div>
 												</div>
 											</div>
-										</div>
-								</form>
-							</div>
-						</div>
-						<div class="col-xl-4">
-							<div class="panel panel--loose panel--raised">
-								<h2 class="subtitle">DETAILS</h2>
-								<hr>
-								<form class="form" role="form" method="POST" onsubmit="return checking();">
-									<div class="col-md">
-										<div class="form-group base-margin-bottom">
-											<div class="form-group__text">
-												<div class="form-group  required"><label class="control-label"
-														for="hostname">HOSTNAME</label>
-													<input class="form-control" id="hostname" name="hostname"
-														required="true" type="text-bold" value="">
-												</div>
-												<div class="form-group  required"><label class="control-label"
-														for="username">USERNAME</label>
-													<input class="form-control" id="username" name="username"
-														required="true" type="text" value="">
-												</div>
-												<div class="form-group  required"><label class="control-label"
-														for="password">PASSWORD</label>
-													<input class="form-control" id="password" name="password"
-														required="true" type="password" value="">
-												</div>
-												<div class="form-group dropdown">
-													<div class="form-group__text select">
-														<label class="control-label" for="arguments">ARGUMENTS</label>
-														<select class="form-control" id="arguments" name="arguments">
-															<option selected value="">Select an Option</option>
-															<option value="httpv2">httpv2</option>
-															<option value="icmp">ICMP</option>
-															<option value="ssh">SSH</option>
-															<option value="tcp">TCP</option>
-														</select>
-													</div>
-												</div>
-											</div>
+
+
 										</div>
 									</div>
-									<button type="submit" name="action" value="add"
-										class="btn btn--success">Add</button>
-									<br><br>
-								</form>
+								</div>
 							</div>
-							<br>
 						</div>
+
+
+
+
+
+
+
 					</div>
+
+
+
+					<br>
 				</div>
 			</div>
 		</div>

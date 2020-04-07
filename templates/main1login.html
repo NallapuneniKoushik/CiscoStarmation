@@ -20,6 +20,20 @@
 	<meta property="og:type" content="website">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="img/apple-touch-icon.png">
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="img/apple-touch-icon.png">
+	<link rel="icon" type="image/png" href="img/favicon.png" sizes="196x196">
+	<link rel="icon" type="image/png" href="img/favicon.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="img/favicon.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="img/favicon.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="img/favicon.png" sizes="128x128">
+	<link rel="icon" href="img/favicon.png" type="image/x-icon">
 	<meta name="application-name" content="Cisco UI Kit">
 	<meta name="msapplication-TileColor" content="#FFFFFF">
 	<meta name="msapplication-TileImage" content="img/mstile.png">
@@ -32,11 +46,82 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<title>PCAP</title>
-	<!--<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}"> -->
-	<link rel="stylesheet" type="text/css" href="static/css/cui-standard.min.css">
+	<title>PCAP AGGREGATOR</title>
+
+	<link rel="stylesheet" type="text/css" href="cui-2.0.1/css/cui-standard.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://code.jquery.com/jquery-3.0.0.min.js"
 		integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"
+		integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="cui-standard.min.css">
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var checkboxes = document.getElementsByClassName("checkbox");
+			var select_all = document.getElementById("checked");
+			$(select_all).change({
+				checkboxes: checkboxes
+			}, function (event) {
+				checkboxes = event.data.checkboxes;
+				for (var i = 1; i < checkboxes.length; i++) {
+					$(checkboxes[i]).prop('checked', this.checked);
+				}
+			});
+
+			function get_data() {
+				$('.ajaxProgress').show();
+				$.ajax({
+					type: "GET",
+					url: "/get_data",
+					dataType: "json",
+					async: true,
+					success: function (data) {
+						$.each(data, function (rowid, row) {
+							if ($('#' + row.slug + '_status')[0].innerHTML !== row.status)
+								$('#' + row.slug + '_status')[0].innerHTML = row.status;
+							if (row.status === 'Get PCAP : successful') {
+								$('#' + row.slug + '_download').show();
+							}
+							if (row.status === 'Not Connected' || row.status === 'Get PCAP : successful' || row.status === 'Get PCAP : 30 secs timeout' || row.status === 'Connection failed!') {
+								$('#' + row.slug).hide();
+							} else {
+								$('#' + row.slug).show();
+							}
+						});
+					},
+					failure: function () {
+						$('#' + row.slug).hide();
+						console.log('Ajax call failed');
+					}
+				});
+			}
+			setTimeout(get_data, 2500);
+			setTimeout(get_data, 5000);
+			setInterval(get_data, 15000);
+		});
+
+		function openNav() {
+			document.getElementById("mySidebar").style.width = "250px";
+		}
+
+		function closeNav() {
+			document.getElementById("mySidebar").style.width = "0";
+		}
+
+		function checking() {
+			console.log("Inside the function");
+			if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(document.getElementById("hostname").value)) {
+				console.log("true");
+				return true;
+			} else {
+				window.alert("Please enter a valid IP address");
+				return false;
+			}
+		};
+	</script>
+	<link rel="stylesheet" type="text/css" href="cui-2.0.1/css/sidebar.css">
 
 </head>
 
@@ -49,7 +134,7 @@
 						<span class="icon-cisco"></span>
 					</a>
 					<h1 class="header__title">
-						<span>PCAP</span>
+						<div class="openbtn" onclick="return openNav()">☰ PCAPs AGGREGATOR</div>
 					</h1>
 				</div>
 				<div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
@@ -58,7 +143,7 @@
 					</a>
 				</div>
 				<div class="header-panel header-panel--right hidden-md-down">
-					<a href="../index.html" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
+					<a href="/" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
 					<div id="themeSwitcher" class="dropdown dropdown--left dropdown--offset-qtr header-item">
 						<a class="header-toolbar__link">LOGIN</a>
 						<div class="dropdown__menu">
@@ -74,11 +159,50 @@
 	<div class="content content--alt">
 		<div class="container-fluid">
 			<div class="row">
+				<div id="mySidebar" class="sidebar">
+					<div>
+						<br>
+						<br>
+						<br>
+					</div>
+					<div class="text-bold">
+						<div style="float: right;">
+							<button onclick="return closeNav()">x</button>
+						</div>
+						<center>VAIO</center>
+					</div>
+					<div>
+						<center>PCAPs AGGREGATOR</center>
+					</div>
+					<nav>
+						<p>Hello</p>
+						<ul id="rootSidebar">
+							<li class="sidebar__item selected">
 
-				<!-- Sidebar -->
+								<a href="/" tabindex="0" title="Assets">
+									<span class="icon-tools"></span>
+									<span>Pcap</span>
+								</a>
+							</li>
+							< <li class="sidebar__item selected">
+								<a tabindex="0" title="Configurations">
+									<span class="icon-configurations"></span>
+									<span>Filtering</span>
+								</a>
+								</li>
+								<li class="sidebar__item selcted">
+									<a tabindex="0" title="Validate">
+										<span class="icon-analysis"></span>
+										<span>Ladder Diagram</span>
+									</a>
+								</li>
+						</ul>
+					</nav>
+
+				</div>
 				<nav class="col-lg-2 col-xl-2 sidebar hidden-md-down dbl-margin-top" role="navigation">
 					<div class="base-margin">
-						<!--<img class="image-size-64" src="../public/img/user-photo-thumb-3.png">-->
+
 						<div class="text-bold">
 							<center>VAIO</center>
 						</div>
@@ -86,57 +210,11 @@
 							<center>PCAP AGGREGATOR</center>
 						</div>
 					</div>
-					<ul id="rootSidebar">
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Assets">
-								<span class="icon-tools"></span>
-								<span>Pcap</span>
-							</a>
-						</li>
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Assets">
-								<span class="icon-tools"></span>
-								<span>Alerts</span>
-							</a>
-						</li>
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Configurations">
-								<span class="icon-configurations"></span>
-								<span>Config</span>
-							</a>
-						</li>
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Reports">
-								<span class="icon-graph"></span>
-								<span>Reports</span>
-							</a>
-						</li>
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Tools">
-								<span class="icon-tools"></span>
-								<span>Tools</span>
-							</a>
-						</li>
-						<li class="sidebar__item selcted">
-							<a tabindex="0" title="Validate">
-								<span class="icon-analysis"></span>
-								<span>Validate</span>
-							</a>
-						</li>
-						</li>
-						<li class="sidebar__item selected">
-							<a tabindex="0" title="Configurations">
-								<span class="icon-configurations"></span>
-								<span>Nitesh</span>
-							</a>
-						</li>
-						</li>
-					</ul>
+
 				</nav>
-
-
 				<div class="col-30 col-lg-12 col-xl-10">
 					<div class="section">
+
 						<div class="row">
 							<div class="col-xl-12">
 								<div class="panel panel--loose panel--raised base-margin-bottom"
@@ -146,7 +224,7 @@
 											<div class="flex flex-center" style="position: relative; top: 60px;">
 												<div class="panel panel--raised panel--loose base-margin-right;">
 													<div class="flex justify-content-center">
-														<h5>Heading 2</h5>
+														<h5>Call Flow Ladder Diagram</h5>
 													</div>
 
 													<div class="form-group base-margin-bottom">
@@ -204,31 +282,28 @@
 							</div>
 						</div>
 						<br>
+
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<footer class="footer">
-		<div class="footer__links">
-			<ul class="list list--inline">
-				<li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html" target="_blank">Contacts</a>
-				</li>
-				<li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ" target="_blank">Feedback</a></li>
-				<li><a href="https://www.cisco.com/c/en/us/about/help.html" target="_blank">Help</a></li>
-				<li><a href="http://www.cisco.com/c/en/us/about/sitemap.html" target="_blank">Site Map</a></li>
-				<li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html" target="_blank">Terms &
-						Conditions</a></li>
-				</li>
-				<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html" target="_blank">Privacy
-						Statement</a></li>
-				<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies" target="_blank">Cookie
-						Policy</a></li>
-				<li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html" target="_blank">Trademarks</a>
-				</li>
-			</ul>
-		</div>
-	</footer>
+			<footer class="footer">
+				<div class="footer__links">
+					<ul class="list list--inline">
+						<li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html">Contacts</a></li>
+						<li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ">Feedback</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/help.html">Help</a></li>
+						<li><a href="http://www.cisco.com/c/en/us/about/sitemap.html">Site Map</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html">Terms &
+								Conditions</a></li>
+						</li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html">Privacy Statement</a>
+						</li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies">Cookie
+								Policy</a></li>
+						<li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html">Trademarks</a></li>
+					</ul>
+				</div>
+			</footer>
 </body>
 
 </html>

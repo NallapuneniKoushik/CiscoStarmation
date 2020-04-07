@@ -1,80 +1,120 @@
-import threading
-from datetime import *
-from pathlib import Path
+import os
+import sys
+import time as tm
 from threading import Thread
 
 import paramiko
 
 from db_util import *
+from file_utils import *
 
 
-def connect(values):
+def send_files_to_client(file_names, username, ftp_client):
+    """For Transfering files from server side to client side using FTP protocol"""
+    for file in file_names:
+        folder = "/home/{}/".format(username)
+        dst = '{}/{}'.format(folder, file)
+        ftp_client.put(file, dst)
+        print("Sent {} to client".format(file))
+
+
+def connect(values, count=30):
+    """for connecting the remote client using the credentials given by the user, the connection will be
+        done with the help of Paramiko library using ssh """
     hostname = values['hostname']
     username = values['username']
     password = values['password']
-    arguments =str( values['arguments']).lower()
-
-    today_date = date.today().strftime('%d%m%y')
-    time_now = datetime.now().strftime('%H%M%S')
-    id = threading.get_ident()
-    pcap_filename = '_'.join((username.replace('-', '_'), hostname.replace('.', '_'), today_date, time_now))
-    pcap_filename += '_' + str(id) + '.pcap'
-
+    arguments = values['arguments']
+    pcap_filename = '_'.join((username, hostname.replace('.', '_'), arguments)) + '.pcap'
+    values['pcap_filename'] = pcap_filename
+    values['count'] = count
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     print('Connection to Server IP address: ' + hostname)
-
     try:
         ssh_client.connect(hostname=hostname, username=username, password=password)
     except paramiko.ssh_exception:
-        print("Connection Issue, check 1. is the ip ping, 2. check the username and passwords")
-
-    print('Creating PCAP file.....' + pcap_filename)
-    # if arguments=='httpv2':
-    #     stdin, stdout, stderr = ssh_client.exec_command("sudo -S <<< \"{}\" tcpdump port 80 -w {} -v -c30".format(password, pcap_filename)) #Verified(Tcp&ssh are coming)
-    #
-    # elif arguments=='icmp':
-    #     stdin, stdout, stderr = ssh_client.exec_command("sudo -S <<< \"{}\" tcpdump -n icmp -w {} -v -c30".format(password, pcap_filename)) #Verified(Tcp&ssh are coming)
-    #
-    # elif arguments=='tcp':
-    #     stdin, stdout, stderr = ssh_client.exec_command("sudo -S <<< \"{}\" tcpdump tcp -w {} -v -c30".format(password, pcap_filename)) #Verified(Tcp&ssh are coming)
-    #
-    # elif arguments=='ssh':
-    #     stdin, stdout, stderr = ssh_client.exec_command("sudo -S <<< \"{}\" tcpdump port 22 -w {} -v -c30".format(password, pcap_filename))  #Verified(Tcp&ssh are coming)
-
-    stdin, stdout, stderr = ssh_client.exec_command("sudo -S <<< \"{}\" tcpdump -n icmp -w {} -v -c30".format(password, pcap_filename))
-    output = stdout.read().decode("utf-8")
-    print(output)
-    print("Creation of PCAP file: {} is done".format(pcap_filename))
+        sys.exit("Connection Issue, check 1. is the ip ping, 2. check the username and passwords")
 
     ftp_client = ssh_client.open_sftp()
-    src = f'/home/cx-lisa/{pcap_filename}'
-    folder = Path(r"C:/Users/nakoushi/Desktop/TcpOutputFiles/")
-    namepath = f'{pcap_filename}.pcap'
-    dst = folder / namepath
-    ftp_client.get(src, dst)
-    print("Got Pcap file into local host")
-    ftp_client.close()
-    ssh_client.close()
+    dump_json_to_file(values, "properties.json")
+    file_names = ['agent.py', 'properties.json']
+    send_files_to_client(file_names, username, ftp_client)
+
+    home_dir = "/home/{}/".format(username)
+    values['status'] = 'Generating PCAP'
+    update_status(values)
+    ssh_client.exec_command("sudo -S <<< {} python3 {}agent.py".format(password, home_dir, pcap_filename, password))
+    Thread(target=listen, args=(ssh_client, ftp_client, home_dir, values)).start()
 
 
-def server_connection():
-    # data = load_json_from_file('pcapdb.json')
-    data = db_util()
-    threads = []
+# """for listening the current status of the process, it is having multiple stages and frequently
+#    returns at which stage it is present, used to display live status"""
+def listen(ssh_client, ftp_client, home_dir, values):
+    """
+
+    :param ssh_client:
+    :param ftp_client:
+    :param home_dir:
+    :param values:
+    """
+    time_elapsed = 0
+    while True:
+        tm.sleep(5)
+        time_elapsed += 1
+        password = values['password']
+        stdin, stdout, stderr = ssh_client.exec_command(
+            "sudo -S <<< {} ls {}properties.json".format(password, home_dir))
+        output = stdout.readlines()
+        if len(output) == 0 or time_elapsed > 6:
+            pcap_filename = values['pcap_filename']
+            src = home_dir + pcap_filename
+            cwd = os.getcwd()
+            dst = os.sep.join((cwd, "TcpOutputs", pcap_filename))
+            ftp_client.get(src, dst)
+            print("Got Pcap file into local host")
+            if len(output) == 0:
+                values['status'] = 'Get PCAP : successful'
+                merge_pcap()
+            else:
+                values['status'] = 'Get PCAP : 30 secs timeout'
+            update_status(values)
+            ftp_client.close()
+            ssh_client.close()
+            break
+
+
+def try_connect(values):
+    hostname = values['hostname']
+    username = values['username']
+    password = values['password']
+    values['status'] = 'Connected'
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     try:
-        for hostname_username, values in data.items():
-            t = Thread(target=connect, args=(values,))
-            t.start()
-            threads.append(t)
-        for t in threads:
-            t.join()
+        ssh_client.connect(hostname=hostname, username=username, password=password)
+    except Exception:
+        values['status'] = 'Connection failed!'
+    finally:
+        ssh_client.close()
+        update_status(values)
+    if values['status'] == 'Connected':
+        Thread(target=connect, args=(values,)).start()
+
+
+def server_connection(data):
+    try:
+        for rowid, values in data.items():
+            Thread(target=try_connect, args=(values,)).start()
     except Exception as e:
         print("Exception occurred: " + e.args[0])
 
 
-    print("Exiting main Program!!!")
-
-
-if __name__ == "__main__":
-    server_connection()
+def merge_pcap():
+    """Merges all the pcaps once every client return it's own pcap file to server"""
+    cwd = os.getcwd()
+    src = os.sep.join((cwd, "TcpOutputs"))
+    dst = os.sep.join((cwd, "TcpOutput", "merged.pcap"))
+    src_pcap_s = [os.sep.join((src, _)) for _ in os.listdir(src) if _.endswith('.pcap')]
+    pcap_files = ' '.join(src_pcap_s)
+    os.system(f"mergecap -w {dst} {pcap_files}")

@@ -1,5 +1,3 @@
-from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
 l = []
@@ -64,7 +62,7 @@ def dict_factory(cursor, row):
 
 
 def main():
-    database = r'C:\Users\nakoushi\FlaskProjects\myflaskapp\db.testdb'
+    database = r'db.testdb'
 
     # create a database connection
     conn = create_connection(database)

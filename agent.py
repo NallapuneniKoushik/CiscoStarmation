@@ -29,6 +29,9 @@ def touch_file(file_name):
 
 
 def create_pcap():
+    """
+        Creates pcap dump file with given arguments in properties.json
+    """
     properties = load_json_from_file("properties.json")
     arguments = properties['arguments']
 

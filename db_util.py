@@ -3,6 +3,7 @@ from builtins import Exception
 
 
 def insert_record(values):
+    """inserting the new records into database"""
     hostname = values['hostname']
     username = values['username']
     password = values['password']
@@ -25,6 +26,7 @@ def insert_record(values):
 
 
 def read_records():
+    """reading the records from database"""
     db_file_name = 'client_data.db'
     with sqlite3.connect(db_file_name) as db_connection_handle:
         db_cursor = db_connection_handle.cursor()
@@ -41,6 +43,7 @@ def read_records():
 
 
 def update_status(values):
+    """updates status accordingly where the process is exactly present"""
     hostname = values['hostname']
     username = values['username']
     arguments = values['arguments']
@@ -63,6 +66,7 @@ def update_status(values):
 
 
 def delete_record_db(rowid):
+    """for deleting the records from database"""
     db_file_name = 'client_data.db'
     with sqlite3.connect(db_file_name) as db_connection_handle:
         try:
@@ -77,20 +81,3 @@ def delete_record_db(rowid):
         finally:
             db_cursor.close()
     return msg
-
-
-# def get_status(hostname, username, arguments):
-#     db_file_name = 'client_data.db'
-#     with sqlite3.connect(db_file_name) as db_connection_handle:
-#         db_cursor = db_connection_handle.cursor()
-#         db_cursor.execute(
-#             f"SELECT STATUS FROM PCAPDB WHERE USERNAME='{username}' AND HOSTNAME='{hostname}'"
-#             f" AND ARGUMENTS='{arguments}'")
-#         data = dict()
-#         for row in db_cursor.fetchall():
-#             row_dict = dict()
-#             for column_name, value in zip(db_cursor.description, row):
-#                 row_dict[column_name[0]] = value
-#             data[hostname + '_' + username] = row_dict
-#         db_cursor.close()
-#         return data
