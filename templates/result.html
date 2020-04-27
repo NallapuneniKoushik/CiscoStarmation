@@ -24,7 +24,7 @@
       float: left;
       width: 28%;
       height: 280px;
-      padding-left: 40px;
+      padding-left: 10px;
     }
 
     #middlebox {
@@ -49,6 +49,8 @@
       line-height: 120%;
     }
 
+
+
     h1 {
       text-align: center;
     }
@@ -59,12 +61,15 @@
 
     pre {
       display: inline-block;
-      font-size: 1em;
+      font-size: 15px;
+      line-height: 15px;
       border-style: solid;
       background-color: grey;
       text-align: justify;
       text-align-first: justify;
-      /*height: 400px;  onload="PreHover()"*/
+      height: 400px;
+
+
     }
 
     #txt {
@@ -76,6 +81,12 @@
       background: red;
       z-index: 1;
     }
+
+    #TextRight {
+      background-color: white;
+      text-align: left;
+
+    }
   </style>
 
 
@@ -86,7 +97,9 @@
   <meta name="author" content="maparama@cisco.com">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <!-- styles -->
-  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">
+
+  <link rel="stylesheet" type="text/css" href="static/css/cui-standard.min_new.css">
+  <!--  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="http://10.88.236.243:5000/static/css/cui-standard.min.css" rel="stylesheet" type="text/css">
@@ -103,7 +116,7 @@
             <span class="icon-cisco"></span>
           </a>
           <h1 class="header__title">
-            <span style="color: var(--cui-accent-color); font-weight:bold">Sequence Diagram</span>
+            <span style="color: var(--cui-accent-color); font-weight:bold">Ladder Diagram</span>
           </h1>
         </div>
         <div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
@@ -130,27 +143,40 @@
   <body><br><br>
     <div id="boxes">
       <div id="leftbox"><br>
-        <pre <textarea spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;"
-          rows="15" cols="30">{%for list in result%}
-          {{list}}{%endfor%}</pre>
-        <img
-          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP4/x8AAwAB/2+Bq7YAAAAASUVORK5CYII="
-          onload="PreHover()" />
-        <br>
+
+        <pre spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;" rows="15"
+          cols="30">
+    {%for list in result%}<div class='link-panel' id="{{result.index(list)}}" onclick="showIt(this);">{{list}}</div>{%endfor%}</pre>
+
+        <!--  <pre spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;" rows="15" cols="30">{%for list in result%}
+            {{list}}{%endfor%}</pre>
+       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP4/x8AAwAB/2+Bq7YAAAAASUVORK5CYII=" onload="PreHover()" >
+    --> <br>
         <div class="flex justify-content-center">
           <button onclick="DispDia()" id="submit" type="submit" class="btn btn--primary">Submit</button>
         </div>
 
         <script>
-          function PreHover() {
-            var output = '';
-            var htm = document.getElementById('txt').innerHTML;
-            var text = htm.split('\n');
-            for (var x = 0; x < text.length - 1; x++) {
-              output = output + '<div>' + text[x] + '</div>';
-            }
-            document.getElementById('txt').innerHTML = output;
+
+          var backEnd = {{ result2| tojson}};
+
+
+          function showIt(element) {
+            var parent = element;
+            /*  alert(parent.id);
+             var content = parent.querySelector("div");*/
+            document.getElementById('TextRight').innerHTML = backEnd[parent.id];
+
           }
+          /*    function PreHover() {
+                  var output = '';
+                  var htm = document.getElementById('txt').innerHTML;
+                  var text = htm.split('\n');
+                  for (var x = 0; x < text.length - 1; x++) {
+                    output = output + '<div>' + text[x] + '</div>';
+                  }
+                  document.getElementById('txt').innerHTML = output;
+                }*/
 
           function DispDia() {
             var d = Diagram.parse(document.getElementById('txt').innerText);
@@ -161,21 +187,29 @@
             d.drawSVG('diagram', options);
           }
 
-          var backEnd = {{ result| tojson}};
 
-          /*$("#txt").on("mouseup", function(eventData) {
-                var lineHeight = $(this).css("line-height")
-                lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
 
-                var line = Math.floor(eventData.offsetY / lineHeight);
-                document.getElementById('TextRight').innerHTML = "";
-                document.getElementById('TextRight').innerHTML = backEnd[line-1];
-              });*/
+          /*      $("#txt").on("mouseup", function(eventData) {
+                   var scrollPosition = $(this).scrollTop()
+                   var lineHeight = $(this).css("line-height");
+                   lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
+    
+                   var line = Math.floor((eventData.offsetY + scrollPosition) / lineHeight);
+                    alert($(this).val().split("\n")[line]);
+                   document.getElementById('TextRight').innerHTML = "";
+                   document.getElementById('TextRight').innerHTML = backEnd[line-1];
+                 });
+    
+                 $("#txt").on("mouseup", function(eventData) {
+                  var lineHeight = $(this).css("line-height")
+                  lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
+    
+                  var line = Math.floor(eventData.offsetY/lineHeight);
+                  document.getElementById('TextRight').innerHTML = "";
+                  document.getElementById('TextRight').innerHTML = backEnd;
+                });*/
         </script>
       </div>
-
-
-
 
       <div id="middlebox" class=wsd wsd-style="modern-blue;">
 
@@ -191,8 +225,11 @@
 
 
       <div id="rightbox"><br>
-        <textarea spellcheck="false" id="TextRight" text-align="left" rows="23" cols="25">{%for list in result2%}{{list}}
-          {%endfor%}</textarea>
+        <pre style="background-color= white;" contenteditable="true" spellcheck="false" id="TextRight"
+          text-align="right" rows="23" cols="25">{%for list in result2%}
+          {{list}}{%endfor%}</pre>
+        <!--    <textarea spellcheck="false" id="TextRight" text-align="left" rows="23" cols="25">{%for list in result2%}{{list}}
+          {%endfor%}</textarea>-->
       </div>
     </div>
   </body>

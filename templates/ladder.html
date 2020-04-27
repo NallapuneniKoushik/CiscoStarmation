@@ -48,22 +48,18 @@
 
 	<title>PCAP AGGREGATOR</title>
 
-	<link rel="stylesheet" type="text/css" href="cui-2.0.1/css/cui-standard.min.css">
+	<link rel="stylesheet" type="text/css" href="static/css/cui-standard.min_new.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<script src="https://code.jquery.com/jquery-3.0.0.min.js"
-		integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+	<script src="../public/js/styleguide.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">
-	<script src="https://code.jquery.com/jquery-3.0.0.min.js"
-		integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
-	<link rel="stylesheet" href="cui-standard.min.css">
 	<script type="text/javascript">
-		$(document).ready(function () {
+		$(document).ready(function() {
 			var checkboxes = document.getElementsByClassName("checkbox");
 			var select_all = document.getElementById("checked");
 			$(select_all).change({
 				checkboxes: checkboxes
-			}, function (event) {
+			}, function(event) {
 				checkboxes = event.data.checkboxes;
 				for (var i = 1; i < checkboxes.length; i++) {
 					$(checkboxes[i]).prop('checked', this.checked);
@@ -77,8 +73,8 @@
 					url: "/get_data",
 					dataType: "json",
 					async: true,
-					success: function (data) {
-						$.each(data, function (rowid, row) {
+					success: function(data) {
+						$.each(data, function(rowid, row) {
 							if ($('#' + row.slug + '_status')[0].innerHTML !== row.status)
 								$('#' + row.slug + '_status')[0].innerHTML = row.status;
 							if (row.status === 'Get PCAP : successful') {
@@ -91,7 +87,7 @@
 							}
 						});
 					},
-					failure: function () {
+					failure: function() {
 						$('#' + row.slug).hide();
 						console.log('Ajax call failed');
 					}
@@ -121,7 +117,7 @@
 			}
 		};
 	</script>
-	<link rel="stylesheet" type="text/css" href="cui-2.0.1/css/sidebar.css">
+	<link rel="stylesheet" type="text/css" href="static/css/sidebar.css">
 
 </head>
 
@@ -134,9 +130,29 @@
 						<span class="icon-cisco"></span>
 					</a>
 					<h1 class="header__title">
-						<div class="openbtn" onclick="return openNav()">☰ PCAPs AGGREGATOR</div>
+						<div class="openbtn" onclick="return openNav()">☰ PCAP AGGREGATOR</div>
 					</h1>
 				</div>
+				<div class="col-md-8">
+					{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+					{% for category,message in messages %}
+					<div id='error_popup' class="alert alert-{category} mb-3" role="alert">
+						{{message}}
+					</div>
+					{% endfor %}
+					{%endif%}
+					{% endwith %}
+					{% block content %}{% endblock %}
+				</div>
+				<style media="screen">
+					#error_popup {
+						border-radius: 15px;
+						font-size: 1em;
+						color: #D8000C;
+						background-color: #FFD2D2
+					}
+				</style>
 				<div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
 					<a class="header__logo" href="http://www.cisco.com" target="_blank">
 						<span class="icon-cisco"></span>
@@ -172,10 +188,9 @@
 						<center>VAIO</center>
 					</div>
 					<div>
-						<center>PCAPs AGGREGATOR</center>
+						<center>PCAP AGGREGATOR</center>
 					</div>
 					<nav>
-						<p>Hello</p>
 						<ul id="rootSidebar">
 							<li class="sidebar__item selected">
 
@@ -184,18 +199,17 @@
 									<span>Pcap</span>
 								</a>
 							</li>
-							< <li class="sidebar__item selected">
-								<a tabindex="0" title="Configurations">
-									<span class="icon-configurations"></span>
-									<span>Filtering</span>
+							<li class="sidebar__item selected">
+								<a tabindex="0" href="/filter_csv">
+									<span class="icon-analysis"></span>
+									Filtering</a>
+							</li>
+							<li class="sidebar__item selcted">
+								<a href="/ladder" tabindex="0" title="Validate">
+									<span class="icon-analysis"></span>
+									<span>Ladder Diagram</span>
 								</a>
-								</li>
-								<li class="sidebar__item selcted">
-									<a tabindex="0" title="Validate">
-										<span class="icon-analysis"></span>
-										<span>Ladder Diagram</span>
-									</a>
-								</li>
+							</li>
 						</ul>
 					</nav>
 
@@ -214,11 +228,9 @@
 				</nav>
 				<div class="col-30 col-lg-12 col-xl-10">
 					<div class="section">
-
 						<div class="row">
 							<div class="col-xl-12">
-								<div class="panel panel--loose panel--raised base-margin-bottom"
-									Style="top-padding:250px">
+								<div class="panel panel--loose panel--raised base-margin-bottom" Style="top-padding:250px">
 									<div class="content">
 										<div class="container-fluid">
 											<div class="flex flex-center" style="position: relative; top: 60px;">
@@ -228,50 +240,46 @@
 													</div>
 
 													<div class="form-group base-margin-bottom">
-														<div class="form-group__text  required">
+														<div class="form-group__text required">
 
-															<form class="form" role="form" method="post" action=""
-																id="upload_form" enctype="multipart/form-data"
-																method="post">
+															<form class="form" role="form" method="post" action="" id="upload_form" enctype="multipart/form-data" method="post">
 
-																<INPUT TYPE="hidden" NAME="User_Input"
-																	onclick="Submit()">
-																<div class="form-group  required"><label
-																		class="control-label"
-																		for="expected_csv_file">CSV Log File(.csv):
-																	</label>
+																<INPUT TYPE="hidden" NAME="User_Input" onclick="Submit()">
+																<div class="form-group required"><label class="control-label" for="expected_csv_file">CSV Log File(.csv): </label>
 
-																	<script type="text/javascript"
-																		language="javascript">
-																			function checkfile(sender) {
-																				var validExts = new Array(".xlsx", ".xls", ".csv");
-																				var fileExt = sender.value;
-																				fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
-																				if (validExts.indexOf(fileExt) < 0) {
-																					alert("Invalid file selected, valid files are of " +
-																						validExts.toString() + " types.");
-																					document.getElementById('file').value = '';
-																					return false;
-																				} else return true;
+																	<script type="text/javascript" language="javascript">
+																		function checkfile(sender) {
+																			var validExts = new Array(".xlsx", ".xls", ".csv");
+																			var fileExt = sender.value;
+																			fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+																			if (validExts.indexOf(fileExt) < 0) {
+																				alert("Invalid file selected, valid files are of " +
+																					validExts.toString() + " types.");
+																				document.getElementById('file').value = '';
+																				return false;
+																			} else return true;
+																			setTimeout(function() {
+																				$('#error_popup').fadeOut('fast');
+																			}, 3000);
 
-																				function submit() {
-																					var filename = document
-																				}
-																			}
-																		</script>
+																		}
+																	</script>
 
-																	<!--	<script src="csv_xml.js" type="text/javascript"></script>-->
-																	<input type="file" name='fileupload' id="data_file"
-																		accept=".csv" onchange="checkfile(this);" />
+																	<!-- <script src="csv_xml.js" type="text/javascript"></script>-->
+																	<input type="file" name='fileupload' id="data_file" accept=".csv" required onchange="checkfile(this);" />
 																	<!-- <input type="file" ID="fileSelect" accept=".csv"/>-->
 																</div>
 
 																<br>
 																<div class="flex justify-content-center">
-																	<button onclick="submit()" id="submit" type="submit"
-																		class="btn btn--primary">Submit</button>
+																	<button onclick="submit(); setTimeout;" id="submit" type="submit" class="btn btn--primary">Submit</button>
 																</div>
 															</form>
+														</div>
+														<br>
+														<div class="flex justify-content-center">
+															<button class="btn"><a style="align:auto" href="{{url_for('download_sample_file')}}"> Download Input File Format</a> <i class="fa fa-download"></i></button>
+
 														</div>
 													</div>
 												</div>
@@ -280,30 +288,33 @@
 									</div>
 								</div>
 							</div>
+							<br>
 						</div>
-						<br>
-
 					</div>
+
 				</div>
 			</div>
-			<footer class="footer">
-				<div class="footer__links">
-					<ul class="list list--inline">
-						<li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html">Contacts</a></li>
-						<li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ">Feedback</a></li>
-						<li><a href="https://www.cisco.com/c/en/us/about/help.html">Help</a></li>
-						<li><a href="http://www.cisco.com/c/en/us/about/sitemap.html">Site Map</a></li>
-						<li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html">Terms &
-								Conditions</a></li>
-						</li>
-						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html">Privacy Statement</a>
-						</li>
-						<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies">Cookie
-								Policy</a></li>
-						<li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html">Trademarks</a></li>
-					</ul>
-				</div>
-			</footer>
+		</div>
+
+
+		<footer class="footer">
+			<div class="footer__links">
+				<ul class="list list--inline">
+					<li><a href="http://www.cisco.com/cisco/web/siteassets/contacts/index.html">Contacts</a></li>
+					<li><a href="https://secure.opinionlab.com/ccc01/o.asp?id=jBjOhqOJ">Feedback</a></li>
+					<li><a href="https://www.cisco.com/c/en/us/about/help.html">Help</a></li>
+					<li><a href="http://www.cisco.com/c/en/us/about/sitemap.html">Site Map</a></li>
+					<li><a href="https://www.cisco.com/c/en/us/about/legal/terms-conditions.html">Terms &
+							Conditions</a></li>
+					</li>
+					<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html">Privacy Statement</a>
+					</li>
+					<li><a href="https://www.cisco.com/c/en/us/about/legal/privacy-full.html#cookies">Cookie
+							Policy</a></li>
+					<li><a href="https://www.cisco.com/c/en/us/about/legal/trademarks.html">Trademarks</a></li>
+				</ul>
+			</div>
+		</footer>
 </body>
 
 </html>

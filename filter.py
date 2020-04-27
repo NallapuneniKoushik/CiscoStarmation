@@ -1,15 +1,15 @@
 import csv
+import io
 import json
-from io import StringIO
+import os
 
-from flask import request, render_template, Flask
+from flask import render_template, request, redirect, flash, send_file
 from werkzeug.utils import secure_filename
-from werkzeug.wrappers import Response
 
 from database import read_data, read_specific_data
+from test_new import app
 
 UPLOAD_FOLDER = 'uploads/'
-from test_new import app
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 l1 = []
@@ -18,21 +18,7 @@ s = []
 
 
 def perform(key, num, filename):
-    data = {}
     dct = []
-    mdct = []
-    a = []
-    l = []
-    l3 = []
-    f = []
-    op = []
-    x = []
-    y = []
-    t = []
-    o = {}
-    fin = []
-    x = []
-    y = []
     with open(filename) as csvFile:
         csvReader = csv.DictReader(csvFile)
         for rows in csvReader:
@@ -206,15 +192,8 @@ def perform(key, num, filename):
     return s
 
 
-@app.route('/filter_csv')
+@app.route('/filter_csv', methods=['GET', 'POST'])
 def filter_csv():
-    context = {'row': read_data()}
-    print(context)
-    return render_template('filter_csv.html', context=context)
-
-
-@app.route('/download', methods=['GET', 'POST'])
-def download():
     if request.method == 'POST':
         mycheckbox = request.form.get('mycheckbox')
         file = request.files['file']
@@ -222,33 +201,79 @@ def download():
         content = {'row': read_specific_data(mycheckbox)}
         key = (content['row'][0][0])
         num = request.form.get('num')
-        op = perform(key, num, filename)
-        return render_template('download.html')
+        perform(key, num, filename)
+        context = {'row': read_data()}
+        return render_template('filter_csv.html', context=context, activate_download=True)
     context = {'row': read_data()}
-    return render_template('filter_csv.html', context=context)
+    return render_template('filter_csv.html', context=context, activate_download=False)
 
 
-@app.route('/download_file', methods=['GET'])
-def download_file():
-    def generate():
-        data = StringIO()
-        header = ["Test case", "No", "Source IP", "Destination IP", "Protocol", "Message Info", "Message Contents",
-                  "Path Mgmt Check", "Transmit Timer", "Periodic Timer"]
-        yield data.getvalue()
-        data.seek(0)
-        data.truncate(0)
-        writer = csv.DictWriter(data, fieldnames=header)
-        writer.writeheader()
-        for item in s:
-            writer.writerow(item)
-            yield data.getvalue()
-            data.seek(0)
-            data.truncate(0)
-
-    response = Response(generate(), mimetype='text/csv')
-    # add a filename
-    response.headers.set("Content-Disposition", "attachment", filename='output.csv')
+@app.route('/download', methods=['GET'])
+def download():
+    header = ["Test case", "No", "Source IP", "Destination IP", "Protocol", "Message Info", "Message Contents",
+              "Path Mgmt Check", "Transmit Timer", "Periodic Timer"]
+    csv_content = list()
+    csv_content.append(','.join(header))
+    for item in s:
+        csv_content.append('"' + '","'.join(item.values()) + '"')
+    response = app.response_class(
+        response=os.linesep.join(csv_content),
+        status=200,
+        mimetype='text/csv'
+    )
+    response.headers.set('Content-disposition', "attachment", filename='sample_merge_csv.csv')
     return response
+
+
+@app.route('/ladder', methods=['GET', 'POST'])
+def ladder():
+    if request.method == 'POST':
+        f = request.files['fileupload']
+        if not f:
+            flash('No files chosen')
+            return redirect(request.url)
+
+        reader = csv.reader(open(r'Interfaces\Interfaces.csv', 'r'))
+        Dictionary = {}
+        data = []
+        Message = []
+        View = [[]]
+
+        for row in reader:
+            k, v = row
+            Dictionary[k] = v
+
+        stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.reader(stream)
+        Valid_List = ['Message', 'Interface', 'In / Out', 'Input Overwrite', 'Validation Overwrite', 'Timeout (ms)',
+                      'Policy/Platform Changes', 'Comments']
+        Valid_List = [x.lower() for x in Valid_List]
+        FColumn = next(csv_input)
+        FColumn = [x.lower() for x in FColumn]
+        status = all(x in FColumn for x in Valid_List)
+        if len(FColumn) != 12 or not status:
+            flash('Choose Appropriate File Format', 'error')
+            return render_template('ladder.html')
+        else:
+            for row in csv_input:
+                if row[7] == '' and row[8] == '':
+                    Message.append('No Message')
+                else:
+                    Message.append(row[7] + row[8])
+                key = row[5][0].upper() + row[5][1].lower()
+                list = Dictionary[key].split('->')
+                if row[6] == 'IN':
+                    data.append(list[0] + "->" + list[1] + ":" + "  " + row[4])
+                else:
+                    data.append(list[1] + "->" + list[0] + ":" + "  " + row[4])
+        return render_template('result.html', result=data, result2=Message)
+    return render_template('ladder.html')
+
+
+@app.route('/download_sample_file')
+def download_sample_file():
+    path = "File_Format.csv"
+    return send_file(path, as_attachment=True)
 
 
 if __name__ == '__main__':

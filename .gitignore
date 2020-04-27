@@ -68,6 +68,5 @@ target/
 # venv
 venv/
 */venv/
-# *.sh
-# */*.sh
-
+*.pcap
+*/*.pcap
