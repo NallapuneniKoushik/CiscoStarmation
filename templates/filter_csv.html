@@ -218,6 +218,17 @@
 
 											<div class="flex flex-center" style="position: relative; top: 30px">
 												<div class="panel panel--raised panel--loose base-margin-right;">
+													<div>
+														{% with messages = get_flashed_messages() %}
+														{% if messages %}
+														<ul>
+															{% for message in messages %}
+															<li>{{ message }}</li>
+															{% endfor %}
+														</ul>
+														{% endif %}
+														{% endwith %}
+													</div>
 													<div class="flex justify-content-center">
 														<h3>Protocol Filtering</h3>
 													</div>

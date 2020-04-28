@@ -197,13 +197,34 @@ def filter_csv():
     if request.method == 'POST':
         mycheckbox = request.form.get('mycheckbox')
         file = request.files['file']
+        if not file:
+            flash('No files chosen')
+            return redirect(request.url)
         filename = secure_filename(file.filename)
-        content = {'row': read_specific_data(mycheckbox)}
-        key = (content['row'][0][0])
-        num = request.form.get('num')
-        perform(key, num, filename)
-        context = {'row': read_data()}
-        return render_template('filter_csv.html', context=context, activate_download=True)
+        with open(filename, 'wb') as input_file:
+            input_file.write(file.stream.read())
+        stream = open(filename, 'rb')
+        content = io.StringIO(stream.read().decode("UTF8"), newline=None)
+        csv_input = csv.reader(content)
+        Valid_List = ["Test case", "No", "Source IP", "Destination IP", "Protocol", "Message Info", "Message Contents",
+                      "Path Mgmt Check", "Transmit Timer", "Periodic Timer"]
+        Valid_List = [x.lower() for x in Valid_List]
+        FColumn = next(csv_input)
+        FColumn = [x.lower() for x in FColumn]
+        status = all(x in FColumn for x in Valid_List)
+        content.close()
+        stream.close()
+        if len(FColumn) != len(Valid_List) or not status:
+            flash('Choose Appropriate File Format', 'error')
+            context = {'row': read_data()}
+            return render_template('filter_csv.html', context=context, activate_download=False)
+        else:
+            content = {'row': read_specific_data(mycheckbox)}
+            key = (content['row'][0][0])
+            num = request.form.get('num')
+            perform(key, num, filename)
+            context = {'row': read_data()}
+            return render_template('filter_csv.html', context=context, activate_download=True)
     context = {'row': read_data()}
     return render_template('filter_csv.html', context=context, activate_download=False)
 
@@ -253,6 +274,7 @@ def ladder():
         status = all(x in FColumn for x in Valid_List)
         if len(FColumn) != 12 or not status:
             flash('Choose Appropriate File Format', 'error')
+            stream.close()
             return render_template('ladder.html')
         else:
             for row in csv_input:
@@ -266,6 +288,7 @@ def ladder():
                     data.append(list[0] + "->" + list[1] + ":" + "  " + row[4])
                 else:
                     data.append(list[1] + "->" + list[0] + ":" + "  " + row[4])
+            stream.close()
         return render_template('result.html', result=data, result2=Message)
     return render_template('ladder.html')
 

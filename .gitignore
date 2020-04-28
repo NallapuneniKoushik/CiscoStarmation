@@ -70,3 +70,5 @@ venv/
 */venv/
 *.pcap
 */*.pcap
+*.csv
+*/*.csv
