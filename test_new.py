@@ -1,6 +1,3 @@
-import csv
-import io
-
 from flask import *
 
 from Server_Connection import *
@@ -91,9 +88,6 @@ def get_pcap_file(slug):
     hostname = values['hostname']
     username = values['username']
     arguments = values['arguments']
-    #
-    # named_tuple = tm.localtime()
-    # time_string = tm.strftime("%d_%m_%Y", named_tuple)
 
     pcap_filename = '_'.join((username, hostname.replace('.', '_'), arguments)) + '.pcap'
     cwd = os.getcwd()
@@ -106,9 +100,6 @@ def get_pcap_file(slug):
     )
     response.headers.set('Content-disposition', "attachment", filename=pcap_filename)
     return response
-
-
-# adding
 
 
 @app.route('/fonct', methods=['POST', 'GET'])

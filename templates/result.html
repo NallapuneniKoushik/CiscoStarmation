@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-<h1></h1>
 
 <head>
   <script src="{{url_for('static', filename='webfont.js')}}" charset="utf-8"></script>
@@ -9,16 +8,15 @@
   <script src="{{url_for('static', filename='sequence-diagram-min.js')}}" charset="utf-8"></script>
   <script src="{{url_for('static', filename='jquery-1.9.0.min.js')}}" charset="utf-8"></script>
   <script src="{{url_for('static', filename='raphael.min.js')}}" charset="utf-8"></script>
-  <!--
-  <style>
-    pre:hover {
-      background-color: green;
+  <script>
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "250px";
     }
-  </style>-->
 
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+    }
   </script>
-  <!-- CSS property to place div
-			side by side -->
   <style>
     #leftbox {
       float: left;
@@ -91,23 +89,21 @@
 
 
   <meta charset="utf-8">
-  <title>Name</title>
-  <!-- meta -->
+  <title>PCAP AGGREGATOR</title>
+
+
   <meta name="description" content="pcap validatio &amp; convertor">
   <meta name="author" content="maparama@cisco.com">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <!-- styles -->
 
   <link rel="stylesheet" type="text/css" href="static/css/cui-standard.min_new.css">
-  <!--  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='cui-2.0.1/css/cui-standard.min.css')}}">-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link href="http://10.88.236.243:5000/static/css/cui-standard.min.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="static/css/sidebar.css">
 </head>
 
 <body class="cui" data-theme="light">
-
-  <!-- Navigation -->
   <nav class="header" id="styleguideheader" role="navigation">
     <div class="container-fluid">
       <div class="header-panels">
@@ -116,7 +112,7 @@
             <span class="icon-cisco"></span>
           </a>
           <h1 class="header__title">
-            <span style="color: var(--cui-accent-color); font-weight:bold">Ladder Diagram</span>
+            <div class="openbtn" onclick="return openNav()">☰ PCAP AGGREGATOR</div>
           </h1>
         </div>
         <div class="header-panel header-panel--center base-margin-left base-margin-right hidden-lg-up">
@@ -125,7 +121,7 @@
           </a>
         </div>
         <div class="header-panel header-panel--right hidden-md-down">
-          <a href="../index.html" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
+          <a href="/" class="header-item" title="UI Kit Home"><span class="icon-home"></span></a>
           <div id="themeSwitcher" class="dropdown dropdown--left dropdown--offset-qtr header-item">
             <a class="header-toolbar__link">LOGIN</a>
             <div class="dropdown__menu">
@@ -136,102 +132,113 @@
         </div>
       </div>
     </div>
-    </header>
-    </div>
   </nav>
-
-  <body><br><br>
-    <div id="boxes">
-      <div id="leftbox"><br>
-
-        <pre spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;" rows="15"
-          cols="30">
-    {%for list in result%}<div class='link-panel' id="{{result.index(list)}}" onclick="showIt(this);">{{list}}</div>{%endfor%}</pre>
-
-        <!--  <pre spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;" rows="15" cols="30">{%for list in result%}
-            {{list}}{%endfor%}</pre>
-       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP4/x8AAwAB/2+Bq7YAAAAASUVORK5CYII=" onload="PreHover()" >
-    --> <br>
-        <div class="flex justify-content-center">
-          <button onclick="DispDia()" id="submit" type="submit" class="btn btn--primary">Submit</button>
+  <div class="container-fluid">
+    <div id="mySidebar" class="sidebar">
+      <div>
+        <br>
+        <br>
+        <br>
+      </div>
+      <div class="text-bold">
+        <div style="float: right;">
+          <button onclick="return closeNav()">x</button>
         </div>
+        <center>VAIO</center>
+      </div>
+      <div>
+        <center>PCAP AGGREGATOR</center>
+      </div>
+      <nav>
+        <ul id="rootSidebar">
+          <li class="sidebar__item selected">
 
-        <script>
+            <a href="/" tabindex="0" title="Assets">
+              <span class="icon-tools"></span>
+              <span>Pcap</span>
+            </a>
+          </li>
+          <li class="sidebar__item selected">
+            <a tabindex="0" href="/filter_csv">
+              <span class="icon-analysis"></span>
+              Filtering</a>
+          </li>
+          <li class="sidebar__item selcted">
+            <a href="/ladder" tabindex="0" title="Validate">
+              <span class="icon-analysis"></span>
+              <span>Ladder Diagram</span>
+            </a>
+          </li>
+        </ul>
+    </div>
+    <nav class="col-lg-2 col-xl-2 sidebar hidden-md-down dbl-margin-top" role="navigation">
+      <div class="base-margin">
 
-          var backEnd = {{ result2| tojson}};
-
-
-          function showIt(element) {
-            var parent = element;
-            /*  alert(parent.id);
-             var content = parent.querySelector("div");*/
-            document.getElementById('TextRight').innerHTML = backEnd[parent.id];
-
-          }
-          /*    function PreHover() {
-                  var output = '';
-                  var htm = document.getElementById('txt').innerHTML;
-                  var text = htm.split('\n');
-                  for (var x = 0; x < text.length - 1; x++) {
-                    output = output + '<div>' + text[x] + '</div>';
-                  }
-                  document.getElementById('txt').innerHTML = output;
-                }*/
-
-          function DispDia() {
-            var d = Diagram.parse(document.getElementById('txt').innerText);
-            var options = {
-              theme: 'simple'
-            };
-            document.getElementById('diagram').innerHTML = "";
-            d.drawSVG('diagram', options);
-          }
-
-
-
-          /*      $("#txt").on("mouseup", function(eventData) {
-                   var scrollPosition = $(this).scrollTop()
-                   var lineHeight = $(this).css("line-height");
-                   lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
-    
-                   var line = Math.floor((eventData.offsetY + scrollPosition) / lineHeight);
-                    alert($(this).val().split("\n")[line]);
-                   document.getElementById('TextRight').innerHTML = "";
-                   document.getElementById('TextRight').innerHTML = backEnd[line-1];
-                 });
-    
-                 $("#txt").on("mouseup", function(eventData) {
-                  var lineHeight = $(this).css("line-height")
-                  lineHeight = parseInt(lineHeight.substring(0, lineHeight.length - 2));
-    
-                  var line = Math.floor(eventData.offsetY/lineHeight);
-                  document.getElementById('TextRight').innerHTML = "";
-                  document.getElementById('TextRight').innerHTML = backEnd;
-                });*/
-        </script>
+        <div class="text-bold">
+          <center>VAIO</center>
+        </div>
+        <div>
+          <center>PCAP AGGREGATOR</center>
+        </div>
       </div>
 
-      <div id="middlebox" class=wsd wsd-style="modern-blue;">
+    </nav>
+  </div>
+  </header>
+  </div>
+  </nav>
+  <br><br>
+  <div id="boxes">
+    <div id="leftbox"><br>
 
-        <div id="diagram"></div>
-        <script>
+      <pre spellcheck="false" text-align="justify" id='txt' contenteditable="true" style="color: white;" rows="15"
+        cols="30">
+    {%for list in result%}<div class='link-panel' id="{{result.index(list)}}" onclick="showIt(this);">{{list}}</div>{%endfor%}</pre>
+      <br>
+      <div class="flex justify-content-center">
+        <button onclick="DispDia()" id="submit" type="submit" class="btn btn--primary">Submit</button>
+      </div>
+
+      <script>
+
+        var backEnd = {{ result2| tojson}};
+
+
+        function showIt(element) {
+          var parent = element;
+          document.getElementById('TextRight').innerHTML = backEnd[parent.id];
+
+        }
+        function DispDia() {
           var d = Diagram.parse(document.getElementById('txt').innerText);
           var options = {
             theme: 'simple'
           };
+          document.getElementById('diagram').innerHTML = "";
           d.drawSVG('diagram', options);
-        </script>
-      </div>
-
-
-      <div id="rightbox"><br>
-        <pre style="background-color= white;" contenteditable="true" spellcheck="false" id="TextRight"
-          text-align="right" rows="23" cols="25">{%for list in result2%}
-          {{list}}{%endfor%}</pre>
-        <!--    <textarea spellcheck="false" id="TextRight" text-align="left" rows="23" cols="25">{%for list in result2%}{{list}}
-          {%endfor%}</textarea>-->
-      </div>
+        }
+      </script>
     </div>
-  </body>
+
+    <div id="middlebox" class=wsd wsd-style="modern-blue;">
+
+      <div id="diagram"></div>
+      <script>
+        var d = Diagram.parse(document.getElementById('txt').innerText);
+        var options = {
+          theme: 'simple'
+        };
+        d.drawSVG('diagram', options);
+      </script>
+    </div>
+
+
+    <div id="rightbox"><br>
+      <pre style="background-color= white;" contenteditable="true" spellcheck="false" id="TextRight" text-align="right"
+        rows="23" cols="25">{%for list in result2%}
+          {{list}}{%endfor%}</pre>
+    </div>
+  </div>
+</body>
 
 </html>

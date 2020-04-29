@@ -26,9 +26,6 @@ def connect(values, count=30):
     password = values['password']
     arguments = values['arguments']
 
-    # named_tuple = tm.localtime()
-    # time_string = tm.strftime("%d_%m_%Y", named_tuple)
-
     pcap_filename = '_'.join((username, hostname.replace('.', '_'), arguments)) + '.pcap'
     values['pcap_filename'] = pcap_filename
     values['count'] = count
