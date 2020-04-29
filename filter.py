@@ -209,12 +209,18 @@ def filter_csv():
         Valid_List = ["Test case", "No", "Source IP", "Destination IP", "Protocol", "Message Info", "Message Contents",
                       "Path Mgmt Check", "Transmit Timer", "Periodic Timer"]
         Valid_List = [x.lower() for x in Valid_List]
-        FColumn = next(csv_input)
+        try:
+            FColumn = next(csv_input)
+        except StopIteration:
+            flash('No data')
+            stream.close()
+            context = {'row': read_data()}
+            return render_template('filter_csv.html', context=context, activate_download=False)
         FColumn = [x.lower() for x in FColumn]
         status = all(x in FColumn for x in Valid_List)
         content.close()
         stream.close()
-        if len(FColumn) != len(Valid_List) or not status:
+        if (len(FColumn) != len(Valid_List)) or (True != status):
             flash('Choose Appropriate File Format', 'error')
             context = {'row': read_data()}
             return render_template('filter_csv.html', context=context, activate_download=False)
@@ -223,6 +229,7 @@ def filter_csv():
             key = (content['row'][0][0])
             num = request.form.get('num')
             perform(key, num, filename)
+            os.remove(filename)
             context = {'row': read_data()}
             return render_template('filter_csv.html', context=context, activate_download=True)
     context = {'row': read_data()}
@@ -266,17 +273,27 @@ def ladder():
 
         stream = io.StringIO(f.stream.read().decode("UTF8"), newline=None)
         csv_input = csv.reader(stream)
-        Valid_List = ['Message', 'Interface', 'In / Out', 'Input Overwrite', 'Validation Overwrite', 'Timeout (ms)',
-                      'Policy/Platform Changes', 'Comments']
+        Valid_List = ['HP ALM TC Id', 'Test Case', 'Test Description', 'Step', 'Message', 'Interface', 'In / Out',
+                      'Input Overwrite', 'Validation Overwrite', 'Timeout (ms)', 'Policy/Platform Changes', 'Comments']
         Valid_List = [x.lower() for x in Valid_List]
-        FColumn = next(csv_input)
+        try:
+            FColumn = next(csv_input)
+        except StopIteration:
+            flash('No data')
+            stream.close()
+            return render_template('ladder.html')
         FColumn = [x.lower() for x in FColumn]
         status = all(x in FColumn for x in Valid_List)
-        if len(FColumn) != 12 or not status:
+        if (len(FColumn) != len(Valid_List)) or (status != True):
             flash('Choose Appropriate File Format', 'error')
             stream.close()
             return render_template('ladder.html')
         else:
+            csv_input = [_ for _ in csv_input]
+            if len(csv_input) == 0:
+                flash('No data')
+                stream.close()
+                return render_template('ladder.html')
             for row in csv_input:
                 if row[7] == '' and row[8] == '':
                     Message.append('No Message')
@@ -293,8 +310,8 @@ def ladder():
     return render_template('ladder.html')
 
 
-@app.route('/download_sample_file')
-def download_sample_file():
+@app.route('/download_format_file')
+def download_format_file():
     path = "File_Format.csv"
     return send_file(path, as_attachment=True)
 

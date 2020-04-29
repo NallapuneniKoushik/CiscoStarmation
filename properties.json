@@ -1,11 +1,11 @@
 {
-    "rowid": 3,
-    "hostname": "10.127.200.11",
-    "username": "mobility01",
-    "password": "mobility01",
-    "arguments": "ssh",
+    "rowid": 2,
+    "hostname": "10.78.151.100",
+    "username": "cx-lisa",
+    "password": "1ronM@n",
+    "arguments": "tcp",
     "status": "Connected",
-    "slug": 3,
-    "pcap_filename": "mobility01_10_127_200_11_ssh.pcap",
+    "slug": 2,
+    "pcap_filename": "cx-lisa_10_78_151_100_tcp.pcap",
     "count": 30
 }
